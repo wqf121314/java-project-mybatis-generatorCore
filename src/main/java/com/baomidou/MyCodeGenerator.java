@@ -1,6 +1,7 @@
 package com.baomidou;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -12,8 +13,7 @@ import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Properties;
+import java.util.*;
 
 public class MyCodeGenerator {
     private static Properties loadYml(String filePath) {
@@ -41,7 +41,7 @@ public class MyCodeGenerator {
                         }
                 ).packageConfig( // 包配置
                         builder -> {
-                            builder.parent("com.baomidou") // 设置父包名
+                            builder.parent("org.wqf.ExchangeRatesServ.repository") // 设置父包名
                                     .entity("entity.po")//Entity 包名
                                     .service("service")//Service 包名
                                     .serviceImpl("service.impl")//Service Impl 包名
@@ -81,11 +81,24 @@ public class MyCodeGenerator {
 
                                     .mapperBuilder() // 映射文件策略配置
                                     .superClass(BaseMapper.class)//设置父类
+                                    .enableMapperAnnotation()//开启 @Mapper 注解
                                     .enableBaseResultMap() //启用 BaseResultMap 生成
                                     .enableBaseColumnList() //启用 BaseColumnList
                                     .enableFileOverride(); //覆盖已有文件
 
-                            builder.addInclude("quotation_nz") // 请设置需要生成的表名
+                            List<String> tables = new ArrayList<>();
+                            tables.add("quotation_aud");
+                            tables.add("quotation_cad");
+                            tables.add("quotation_chf");
+                            tables.add("quotation_eur");
+                            tables.add("quotation_gbp");
+                            tables.add("quotation_hkd");
+                            tables.add("quotation_jpy");
+                            tables.add("quotation_nzd");
+                            tables.add("quotation_sgy");
+                            tables.add("quotation_usd");
+
+                            builder.addInclude(tables) // 请设置需要生成的表名
                                     .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                         }
                 ).templateEngine(new FreemarkerTemplateEngine())
